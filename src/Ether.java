@@ -12,19 +12,16 @@ public class Ether implements Drawable {
 
     public final int RTT;
 
-    private static final int CELL_WIDTH = 15;
-    private static final int CELL_HEIGHT = 20;
-
     private final List<Packet> packets;
     private final Cell[] ether;
 
-    public Ether(int startX, int startY, int numCells) {
+    public Ether(double startX, double startY, double cellWidth, double cellHeight, int numCells) {
         ether = new Cell[numCells];
         RTT = numCells * 2;
 
         for (int i = 0; i < ether.length; i++) {
-            ether[i] = new Cell(startX + i * CELL_WIDTH , startY,
-                                CELL_WIDTH / 2, CELL_HEIGHT / 2);
+            ether[i] = new Cell(startX + i * cellWidth , startY,
+                                cellWidth / 2, cellHeight / 2);
         }
 
         packets = new ArrayList<Packet>();

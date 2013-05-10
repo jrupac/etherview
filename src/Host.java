@@ -13,6 +13,8 @@ public class Host {
         WAITING_ON_SEND     // Waiting to ensure sent packet does not get corrupted
     }
 
+    private final double x;
+    private final double y;
     private final int cellIndex;
     private final Ether ether;
     private final Queue<Packet> queuedPackets;
@@ -22,7 +24,9 @@ public class Host {
     private int secondsTilSure;
     private State currentState;
 
-    public Host(int cellIndex, Ether ether) {
+    public Host(int x, int y, int cellIndex, Ether ether) {
+        this.x = x;
+        this.y = y;
         this.cellIndex = cellIndex;
         this.ether = ether;
 

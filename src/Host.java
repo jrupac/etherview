@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -6,10 +7,10 @@ import java.util.Queue;
  */
 public class Host {
     private enum State {
-        IDLE,       // No packets to send
-        DEFERRING,  // Waiting for passing packet to complete
-        WRITING,    // Writing packet to ether
-        BACKED_OFF, // Waiting after collision before re-sending
+        IDLE,               // No packets to send
+        DEFERRING,          // Waiting for passing packet to complete
+        WRITING,            // Writing packet to ether
+        BACKED_OFF,         // Waiting after collision before re-sending
         WAITING_ON_SEND     // Waiting to ensure sent packet does not get corrupted
     }
 
@@ -18,19 +19,20 @@ public class Host {
     private final int cellIndex;
     private final Ether ether;
     private final Queue<Packet> queuedPackets;
+    private final Color hostColor;
 
     private int secondsTilNextSend;
     private int backoffFactor;
     private int secondsTilSure;
     private State currentState;
 
-    public Host(int x, int y, int cellIndex, Ether ether) {
+    public Host(int x, int y, int cellIndex, Color color, Ether ether) {
         this.x = x;
         this.y = y;
         this.cellIndex = cellIndex;
         this.ether = ether;
-
         queuedPackets = new LinkedList<Packet>();
+        hostColor = color;
 
         currentState = State.IDLE;
         secondsTilNextSend = 0;
@@ -38,25 +40,37 @@ public class Host {
         secondsTilSure = 0;
     }
 
+    public Color getHostColor() {
+        return hostColor;
+    }
+
     public synchronized void sendPacket(Packet packet) {
+        packet.setSource(this);
         queuedPackets.add(packet);
     }
 
     public void update() {
         Cell currentCell = ether.read(cellIndex);
 
-        if (!isCorrupted(currentCell) && currentCell.getPacket().getDestination() == this) {
-            // do something with this!!
+        if (!currentCell.isEmpty() &&
+            !currentCell.isCorrupted() &&
+            currentCell.getPacket().getDestination() == this) {
+            System.out.println("HOST " + hostColor + "RECEIVED PACKET FROM HOST " + currentCell
+                    .getPacket().getSource().getHostColor() + " !");
         }
 
         switch (currentState) {
             case IDLE:
                 if (currentCell.isEmpty()) {
                     if (!queuedPackets.isEmpty()) {
-                        // send first cell
+                        if (queuedPackets.peek().cellsLeftToWrite()) {
+                            ether.write(queuedPackets.peek(), cellIndex);
+                            queuedPackets.peek().markCellWritten();
+                        }
 
-                        // if packet > 1 cell
-                        currentState = State.WRITING;
+                        if (queuedPackets.peek().cellsLeftToWrite()) {
+                            currentState = State.WRITING;
+                        }
                     }
                 }
                 break;
@@ -65,25 +79,31 @@ public class Host {
                     currentState = State.IDLE;
 
                     if (!queuedPackets.isEmpty()) {
-                        // send first cell
+                        if (queuedPackets.peek().cellsLeftToWrite()) {
+                            ether.write(queuedPackets.peek(), cellIndex);
+                            queuedPackets.peek().markCellWritten();
+                        }
 
-                        // if packet > 1 cell
-                        currentState = State.WRITING;
+                        if (queuedPackets.peek().cellsLeftToWrite()) {
+                            currentState = State.WRITING;
+                        }
                     }
                 }
                 break;
             case WRITING:
-                if (isCorrupted(currentCell)) {
+                if (currentCell.isCorrupted()) {
                     ether.write(Ether.JAM_PACKET, cellIndex);
                     secondsTilNextSend += (int) (Math.random() * (1 << ++backoffFactor));
                     currentState = State.BACKED_OFF;
                 } else {
-                    // if something left to write
-                        // keep writing
-                    // else
+                    if (queuedPackets.peek().cellsLeftToWrite()) {
+                        ether.write(queuedPackets.peek(), cellIndex);
+                        queuedPackets.peek().markCellWritten();
+                    } else {
+                        queuedPackets.poll();
                         secondsTilSure = ether.RTT;
                         currentState = State.WAITING_ON_SEND;
-
+                    }
                 }
                 break;
             case BACKED_OFF:
@@ -93,7 +113,7 @@ public class Host {
                 }
                 break;
             case WAITING_ON_SEND:
-                if (isCorrupted(currentCell)) {
+                if (currentCell.isCorrupted()) {
                     ether.write(Ether.JAM_PACKET, cellIndex);
                     secondsTilNextSend += (int) (Math.random() * (1 << ++backoffFactor));
                     secondsTilSure = Integer.MAX_VALUE;
@@ -106,9 +126,5 @@ public class Host {
                 }
                 break;
         }
-    }
-
-    public boolean isCorrupted(Cell cell) {
-        return false;
     }
 }

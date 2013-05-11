@@ -67,7 +67,7 @@ public class Renderer {
                 public void run() {
                     while (!Renderer.isStopped) {
                         try {
-                            Thread.sleep(100);
+                            StdDraw.show(100);
 
                             if (Renderer.isPaused) {
                                 synchronized (this) {
@@ -80,6 +80,7 @@ public class Renderer {
                         }
 
                         if (!Renderer.isStopped) {
+
                             for (Drawable child : Renderer.children) {
                                 child.draw();
                             }

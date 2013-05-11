@@ -1,18 +1,40 @@
-import java.awt.Color;
-
 /**
  * This class represents an Ethernet packet.
  */
 public class Packet {
     private final int length;
-    private final Color color;
+    private Host source;
+    private final Host destination;
 
-    public Packet(int length, Color color) {
+    private int numCellsWritten;
+
+    public Packet(int length, Host destination) {
         this.length = length;
-        this.color = color;
+        this.destination = destination;
+        numCellsWritten = 0;
+    }
+
+    public void setSource(Host source) {
+        this.source = source;
+    }
+
+    public void markCellWritten() {
+        if (numCellsWritten >= length) {
+            throw new IllegalStateException("No more data can be written");
+        } else {
+            numCellsWritten++;
+        }
+    }
+
+    public boolean cellsLeftToWrite() {
+        return numCellsWritten < length;
     }
 
     public Host getDestination() {
-        return null;
+        return destination;
+    }
+
+    public Host getSource() {
+        return source;
     }
 }

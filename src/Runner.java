@@ -14,7 +14,7 @@ public class Runner {
     private static final double CELL_HEIGHT = Y_SCALE / 2;
 
     public static void main(String args[]) throws InterruptedException {
-        ether = new Ether(0, 0, CELL_WIDTH, CELL_HEIGHT, NUM_CELLS);
+        ether = new Ether(0, 3 * Y_SCALE / 10, CELL_WIDTH, CELL_HEIGHT, NUM_CELLS);
 
 
         Host host1 = new Host(0, 0, 5, Color.CYAN, ether);

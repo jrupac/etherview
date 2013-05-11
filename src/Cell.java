@@ -9,6 +9,9 @@ public class Cell implements Drawable {
     // Fudge factor to prevent color bleeds
     private static final double EPS = 1;
 
+    // determines about how many striped should be made in collisions
+    private static final int NUM_STRIPES = 7;
+
     private final double x;
     private final double y;
     private final double halfX;
@@ -61,15 +64,20 @@ public class Cell implements Drawable {
         if (isEmpty()) {
             StdDraw.setPenColor(emptyColor);
             StdDraw.filledRectangle(x - EPS, y - EPS, halfX + EPS, halfY + EPS);
-        } else {
-            int avgRgb = 0;
-
-            for (Packet packet : packetsInCell) {
-                avgRgb += packet.getSource().getHostColor().getRGB();
-            }
-
-            StdDraw.setPenColor(new Color(avgRgb / packetsInCell.size()));
+        } else if (packetsInCell.size() == 1) {
+            StdDraw.setPenColor(getPacket().getSource().getHostColor());
             StdDraw.filledRectangle(x - EPS, y - EPS, halfX + EPS / 2, halfY + EPS / 2);
+        } else {
+            double splitHalfY = halfY / packetsInCell.size() / NUM_STRIPES;
+            double splitY = y - halfY + splitHalfY;
+
+            for (int i = 0; i < NUM_STRIPES; i++) {
+                for (Packet packet : packetsInCell) {
+                    StdDraw.setPenColor(packet.getSource().getHostColor());
+                    StdDraw.filledRectangle(x - EPS, splitY - EPS, halfX + EPS / 2, splitHalfY + EPS / 2);
+                    splitY += 2 * splitHalfY;
+                }
+            }
         }
 
         StdDraw.setPenColor(old);

@@ -100,7 +100,6 @@ public class Host {
                         ether.write(queuedPackets.peek(), cellIndex);
                         queuedPackets.peek().markCellWritten();
                     } else {
-                        queuedPackets.poll();
                         secondsTilSure = ether.RTT;
                         currentState = State.WAITING_ON_SEND;
                     }
@@ -120,6 +119,7 @@ public class Host {
                     currentState = State.BACKED_OFF;
                 } else {
                     if (--secondsTilSure == 0) {
+                        queuedPackets.poll();
                         secondsTilNextSend = 0;
                         currentState = State.IDLE;
                     }

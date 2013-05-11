@@ -35,13 +35,7 @@ public class Runner {
         Renderer.start();
 
 
-        host3.sendPacket(new Packet(8, host1));
-
-        Thread.sleep(300);
-
+        host3.sendPacket(new Packet(6, host1));
         host1.sendPacket(new Packet(4, host2));
-
-
-
     }
 }

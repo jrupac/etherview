@@ -16,6 +16,7 @@ public class Renderer {
 
     private static volatile boolean isPaused = false;
     private static volatile boolean isStopped = false;
+    private static volatile boolean isStepping = false;
 
     public synchronized static void registerDrawable(Drawable drawable) {
         children.add(drawable);
@@ -27,6 +28,8 @@ public class Renderer {
 
     public static void stop() {
         if (drawThread != null) {
+            isPaused = false;
+            isStepping = false;
             isStopped = true;
 
             if (runnable != null) {
@@ -43,12 +46,25 @@ public class Renderer {
         }
     }
 
-    public static void pause() {
-        isPaused = true;
+    public synchronized static void step() {
+        isPaused = false;
+        isStepping = true;
+
+        if (runnable != null) {
+            synchronized (runnable) {
+                runnable.notify();
+            }
+        }
     }
 
-    public static void resume() {
+    public synchronized static void pause() {
+        isPaused = true;
+        isStepping = false;
+    }
+
+    public synchronized static void resume() {
         isPaused = false;
+        isStepping = false;
 
         if (runnable != null) {
             synchronized (runnable) {
@@ -80,9 +96,12 @@ public class Renderer {
                         }
 
                         if (!Renderer.isStopped) {
-
                             for (Drawable child : Renderer.children) {
                                 child.draw();
+                            }
+
+                            if (Renderer.isStepping) {
+                                Renderer.pause();
                             }
                         }
                     }

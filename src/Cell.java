@@ -6,6 +6,9 @@ import java.util.Set;
  * A Cell is a single unit on the ether.
  */
 public class Cell implements Drawable {
+    // Fudge factor to prevent color bleeds
+    private static final double EPS = 1;
+
     private final double x;
     private final double y;
     private final double halfX;
@@ -50,22 +53,23 @@ public class Cell implements Drawable {
         return packetsInCell.size() > 1;
     }
 
+
     @Override
     public void draw() {
         Color old = StdDraw.getPenColor();
 
         if (isEmpty()) {
             StdDraw.setPenColor(emptyColor);
-            StdDraw.filledRectangle(x, y, halfX, halfY);
+            StdDraw.filledRectangle(x - EPS, y - EPS, halfX + EPS, halfY + EPS);
         } else {
-            double colorHeight = halfY / (packetsInCell.size());
-            int index = 0;
+            int avgRgb = 0;
 
             for (Packet packet : packetsInCell) {
-                StdDraw.setPenColor(packet.getSource().getHostColor());
-                StdDraw.filledRectangle(x, y + index * colorHeight, halfX, colorHeight);
-                index++;
+                avgRgb += packet.getSource().getHostColor().getRGB();
             }
+
+            StdDraw.setPenColor(new Color(avgRgb / packetsInCell.size()));
+            StdDraw.filledRectangle(x - EPS, y - EPS, halfX + EPS / 2, halfY + EPS / 2);
         }
 
         StdDraw.setPenColor(old);

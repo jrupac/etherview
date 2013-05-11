@@ -55,8 +55,8 @@ public class Host {
         if (!currentCell.isEmpty() &&
             !currentCell.isCorrupted() &&
             currentCell.getPacket().getDestination() == this) {
-            System.out.println("HOST " + hostColor + "RECEIVED PACKET FROM HOST " + currentCell
-                    .getPacket().getSource().getHostColor() + " !");
+            System.out.println("HOST " + hostColor + " RECEIVED PACKET FROM HOST " + currentCell
+                    .getPacket().getSource().getHostColor() + "!");
         }
 
         switch (currentState) {

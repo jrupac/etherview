@@ -1,13 +1,11 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A class to represent the ether, i.e., the cable
  * that hosts on the network are connected to.
  */
 public class Ether implements Drawable {
+    // TODO: Implement this. Make the color something like black.
     public static Packet JAM_PACKET = null;
 
     private static enum Direction {
@@ -71,7 +69,14 @@ public class Ether implements Drawable {
         }
 
         for (int i = 0; i < ether.length; i++) {
+//            for (Iterator<Packet> it = ether[i].getPacketIterator(); it.hasNext(); ) {
+//                Packet packet = it.next();
             for (Packet packet : ether[i].getPackets()) {
+                // TODO: shouldn't have this case
+                if (packet == null) {
+                    System.out.println("hi");
+                    continue;
+                }
                 if (directions.get(packet) == Direction.BOTH) {
                     Packet leftPacket = new Packet(packet);
                     directions.put(packet, Direction.RIGHT);
@@ -79,16 +84,15 @@ public class Ether implements Drawable {
 
                     if (i < ether.length - 1) newEther[i + 1].addPacket(packet);
                     if (i > 0) newEther[i - 1].addPacket(leftPacket);
-                    ether[i].removePacket(packet);
                 } else if (directions.get(packet) == Direction.LEFT) {
                     if (i > 0) newEther[i - 1].addPacket(packet);
-                    ether[i].removePacket(packet);
                 } else if (directions.get(packet) == Direction.RIGHT) {
                     if (i < ether.length - 1) newEther[i + 1].addPacket(packet);
-                    ether[i].removePacket(packet);
                 } else {
                     throw new RuntimeException("Packet did not have associated direction.");
                 }
+//                ether[i].removePacket(packet);
+//                it.remove();
             }
         }
 

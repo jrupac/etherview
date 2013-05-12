@@ -16,26 +16,38 @@ public class Runner {
     public static void main(String args[]) throws InterruptedException {
         ether = new Ether(0, 3 * Y_SCALE / 10, CELL_WIDTH, CELL_HEIGHT, NUM_CELLS);
 
+        final Host[] hosts = new Host[3];
+        hosts[0] = new Host("Alice", 0, 0, 5, Color.CYAN, ether);
+        hosts[1] = new Host("Bob", 0, 0, 10, Color.MAGENTA, ether);
+        hosts[2] = new Host("trOOOdy", 0, 0, 2, Color.YELLOW, ether);
 
-        Host host1 = new Host(0, 0, 5, Color.CYAN, ether);
-        Host host2 = new Host(0, 0, 10, Color.PINK, ether);
-        Host host3 = new Host(0, 0, 2, Color.ORANGE, ether);
+        ether.registerHost(hosts[0]);
+        ether.registerHost(hosts[1]);
+        ether.registerHost(hosts[2]);
 
-        ether.registerHost(host1);
-        ether.registerHost(host2);
-        ether.registerHost(host3);
+        //Schedule a job for the event-dispatching thread:
+        //creating and showing this application's GUI.
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                EtherGUI gui = new EtherGUI(hosts, 400, 100);
+                gui.pack();
+                gui.setVisible(true);
 
-        StdDraw.setCanvasSize(400, 100);
-        StdDraw.setTitle("Etherview");
+                // TODO: make drawing canvas a subcomponent in the main GUI window
+                StdDraw.setXscale(0, X_SCALE);
+                StdDraw.setYscale(0, Y_SCALE);
 
-        StdDraw.setXscale(0, X_SCALE);
-        StdDraw.setYscale(0, Y_SCALE);
+                Renderer.registerDrawable(ether);
+//                Renderer.start();
+            }
+        });
 
-        Renderer.registerDrawable(ether);
-        Renderer.start();
 
 
-        host3.sendPacket(new Packet(6, host1));
-        host1.sendPacket(new Packet(4, host2));
+
+        hosts[2].sendPacket(new Packet(6, hosts[0]));
+        hosts[0].sendPacket(new Packet(4, hosts[1]));
+        // TODO: fix bug that occurs when there are 3 packets
+        hosts[1].sendPacket(new Packet(10, hosts[0]));
     }
 }

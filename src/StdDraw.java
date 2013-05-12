@@ -131,6 +131,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
     // the frame for drawing to the screen
     private static JFrame frame;
+//    private static JPanel parent;
 
     // mouse state
     private static boolean mousePressed = false;
@@ -151,29 +152,30 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
     /**
      * Set the window size to the default size 512-by-512 pixels.
      */
-    public static void setCanvasSize() {
-        setCanvasSize(DEFAULT_SIZE, DEFAULT_SIZE);
-    }
+//    public static void setCanvasSize() {
+//        setCanvasSize(DEFAULT_SIZE, DEFAULT_SIZE);
+//    }
 
-    public static void setTitle(String title) {
-        if (frame == null) {
-            throw new IllegalStateException("Must call setCanvasSize() first.");
-        }
-
-        frame.setTitle(title);
-    }
+//    public static void setTitle(String title) {
+//        if (frame == null) {
+//            throw new IllegalStateException("Must call setCanvasSize() first.");
+//        }
+//
+//        frame.setTitle(title);
+//    }
 
     /**
      * Set the window size to w-by-h pixels.
      *
      * @param w the width as a number of pixels
      * @param h the height as a number of pixels
-     * @throws RunTimeException if the width or height is 0 or negative
+     * @throws RuntimeException if the width or height is 0 or negative
      */
-    public static void setCanvasSize(int w, int h) {
+    public static void init(JPanel parent, int w, int h) {
         if (w < 1 || h < 1) throw new RuntimeException("width and height must be positive");
         width = w;
         height = h;
+//        StdDraw.parent = parent;
         init();
     }
 
@@ -207,6 +209,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
         draw.addMouseListener(std);
         draw.addMouseMotionListener(std);
 
+//        parent.add(draw);
         frame.setContentPane(draw);
         frame.addKeyListener(std);    // JLabel cannot get keyboard focus
         frame.setResizable(false);
@@ -869,6 +872,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
     private static void draw() {
         if (defer) return;
         onscreen.drawImage(offscreenImage, 0, 0, null);
+//        parent.repaint();
         frame.repaint();
     }
 
@@ -917,6 +921,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
      * This method cannot be called directly.
      */
     public void actionPerformed(ActionEvent e) {
+//        FileDialog chooser = new FileDialog((JFrame) parent.getParent(), "Use a .png or .jpg extension", FileDialog.SAVE);
         FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
         chooser.setVisible(true);
         String filename = chooser.getFile();

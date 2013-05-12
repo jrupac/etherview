@@ -14,6 +14,14 @@ public class Packet {
         numCellsWritten = 0;
     }
 
+    // copy constructor
+    public Packet(Packet copy) {
+        this.length = copy.length;
+        this.source = copy.source;
+        this.destination = copy.destination;
+        this.numCellsWritten = copy.numCellsWritten;
+    }
+
     public void setSource(Host source) {
         this.source = source;
     }

@@ -12,7 +12,8 @@ public class Ether implements Drawable {
 
     private static enum Direction {
         LEFT,
-        RIGHT
+        RIGHT,
+        BOTH    // needed for initial cell
     }
 
     public final int RTT;
@@ -53,6 +54,7 @@ public class Ether implements Drawable {
 
     public synchronized void write(Packet packet, int index) {
         ether[index].addPacket(packet);
+        directions.put(packet, Direction.BOTH);
     }
 
     @Override
@@ -68,11 +70,25 @@ public class Ether implements Drawable {
                                    cellWidth / 2, cellHeight / 2);
         }
 
-        // TODO: Support both left and right
-        for (int i = 1; i < ether.length - 1; i++) {
+        for (int i = 0; i < ether.length; i++) {
             for (Packet packet : ether[i].getPackets()) {
-                newEther[i + 1].addPacket(packet);
-                ether[i].removePacket(packet);
+                if (directions.get(packet) == Direction.BOTH) {
+                    Packet leftPacket = new Packet(packet);
+                    directions.put(packet, Direction.RIGHT);
+                    directions.put(leftPacket, Direction.LEFT);
+
+                    if (i < ether.length - 1) newEther[i + 1].addPacket(packet);
+                    if (i > 0) newEther[i - 1].addPacket(leftPacket);
+                    ether[i].removePacket(packet);
+                } else if (directions.get(packet) == Direction.LEFT) {
+                    if (i > 0) newEther[i - 1].addPacket(packet);
+                    ether[i].removePacket(packet);
+                } else if (directions.get(packet) == Direction.RIGHT) {
+                    if (i < ether.length - 1) newEther[i + 1].addPacket(packet);
+                    ether[i].removePacket(packet);
+                } else {
+                    throw new RuntimeException("Packet did not have associated direction.");
+                }
             }
         }
 

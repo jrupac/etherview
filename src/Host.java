@@ -20,13 +20,15 @@ public class Host {
     private final Ether ether;
     private final Queue<Packet> queuedPackets;
     private final Color hostColor;
+    private final String name;
 
     private int secondsTilNextSend;
     private int backoffFactor;
     private int secondsTilSure;
     private State currentState;
 
-    public Host(int x, int y, int cellIndex, Color color, Ether ether) {
+    public Host(String name, int x, int y, int cellIndex, Color color, Ether ether) {
+        this.name = name;
         this.x = x;
         this.y = y;
         this.cellIndex = cellIndex;
@@ -42,6 +44,11 @@ public class Host {
 
     public Color getHostColor() {
         return hostColor;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 
     public synchronized void sendPacket(Packet packet) {

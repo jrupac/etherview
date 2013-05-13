@@ -22,10 +22,6 @@ public class Renderer {
         children.add(drawable);
     }
 
-    public synchronized static void unregisterDrawable(Drawable drawable) {
-        children.remove(drawable);
-    }
-
     public static void stop() {
         if (drawThread != null) {
             isPaused = false;

@@ -45,10 +45,6 @@ public class Cell implements Drawable {
         packetsInCell.add(packet);
     }
 
-    public void removePacket(Packet packet) {
-        packetsInCell.remove(packet);
-    }
-
     public boolean isEmpty() {
         return packetsInCell.isEmpty();
     }

@@ -34,7 +34,6 @@ public class Runner {
                 gui.pack();
                 gui.setVisible(true);
 
-                // TODO: make drawing canvas a subcomponent in the main GUI window
                 StdDraw.setXscale(0, X_SCALE);
                 StdDraw.setYscale(0, Y_SCALE);
 

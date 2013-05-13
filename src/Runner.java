@@ -21,10 +21,6 @@ public class Runner {
         hosts[1] = new Host("Bob", 0, 0, 10, Color.MAGENTA, ether);
         hosts[2] = new Host("trOOOdy", 0, 0, 2, Color.YELLOW, ether);
 
-        ether.registerHost(hosts[0]);
-        ether.registerHost(hosts[1]);
-        ether.registerHost(hosts[2]);
-
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -43,11 +39,8 @@ public class Runner {
         });
 
 
-
-
         hosts[2].sendPacket(new Packet(6, hosts[0]));
         hosts[0].sendPacket(new Packet(4, hosts[1]));
-        // TODO: fix bug that occurs when there are 3 packets
         hosts[1].sendPacket(new Packet(10, hosts[0]));
     }
 }

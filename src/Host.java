@@ -40,6 +40,10 @@ public class Host {
         secondsTilNextSend = 0;
         backoffFactor = 1;
         secondsTilSure = 0;
+
+        if (ether != null) {
+            ether.registerHost(this);
+        }
     }
 
     public Color getHostColor() {

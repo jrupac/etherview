@@ -63,3 +63,9 @@ at 25 cells.
 
     3 2 1 55
     5 1 0 62
+
+Drawing Library
+---------------
+
+We used and adapted the `StdDraw.java` library from the [Princeton COS 126
+course materials.](http://introcs.cs.princeton.edu/java/stdlib/)

@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.*;
 
 /**
@@ -5,8 +6,14 @@ import java.util.*;
  * that hosts on the network are connected to.
  */
 public class Ether implements Drawable {
-    // TODO: Implement this. Make the color something like black.
-    public static Packet JAM_PACKET = null;
+
+    // Used to make all jam packets have the same color
+    private static final Host JAM_HOST = new Host("JAM", 0, 0, 0, Color.BLACK, null);
+    public static final Packet JAM_PACKET = new Packet(1, JAM_HOST);
+
+    static {
+        JAM_PACKET.setSource(JAM_HOST);
+    }
 
     private static enum Direction {
         LEFT,
@@ -69,14 +76,7 @@ public class Ether implements Drawable {
         }
 
         for (int i = 0; i < ether.length; i++) {
-//            for (Iterator<Packet> it = ether[i].getPacketIterator(); it.hasNext(); ) {
-//                Packet packet = it.next();
             for (Packet packet : ether[i].getPackets()) {
-                // TODO: shouldn't have this case
-                if (packet == null) {
-                    System.out.println("hi");
-                    continue;
-                }
                 if (directions.get(packet) == Direction.BOTH) {
                     Packet leftPacket = new Packet(packet);
                     directions.put(packet, Direction.RIGHT);
@@ -91,8 +91,6 @@ public class Ether implements Drawable {
                 } else {
                     throw new RuntimeException("Packet did not have associated direction.");
                 }
-//                ether[i].removePacket(packet);
-//                it.remove();
             }
         }
 

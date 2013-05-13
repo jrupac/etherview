@@ -38,12 +38,7 @@ public class Cell implements Drawable {
     }
 
     public Iterable<Packet> getPackets() {
-//        return packetsInCell;
-        return new HashSet<Packet>(packetsInCell);
-    }
-
-    public Iterator<Packet> getPacketIterator() {
-        return packetsInCell.iterator();
+        return packetsInCell;
     }
 
     public void addPacket(Packet packet) {

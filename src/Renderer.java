@@ -83,7 +83,7 @@ public class Renderer {
                 public void run() {
                     while (!Renderer.isStopped) {
                         try {
-                            StdDraw.show(100);
+                            StdDraw.show(1000 / Runner.getFps());
 
                             if (Renderer.isPaused) {
                                 synchronized (this) {

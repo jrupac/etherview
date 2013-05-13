@@ -156,13 +156,13 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 //        setCanvasSize(DEFAULT_SIZE, DEFAULT_SIZE);
 //    }
 
-//    public static void setTitle(String title) {
-//        if (frame == null) {
-//            throw new IllegalStateException("Must call setCanvasSize() first.");
-//        }
-//
-//        frame.setTitle(title);
-//    }
+    public static void setTitle(String title) {
+        if (frame == null) {
+            throw new IllegalStateException("Must call setCanvasSize() first.");
+        }
+
+        frame.setTitle(title);
+    }
 
     /**
      * Set the window size to w-by-h pixels.

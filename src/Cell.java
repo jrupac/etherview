@@ -11,7 +11,7 @@ public class Cell implements Drawable {
     private static final double EPS = 1;
 
     // determines about how many striped should be made in collisions
-    private static final int NUM_STRIPES = 2;
+    private static final int NUM_STRIPES = 3;
 
     private final double x;
     private final double y;
@@ -25,7 +25,7 @@ public class Cell implements Drawable {
         this.y = y;
         this.halfX = halfX;
         this.halfY = halfY;
-        emptyColor = new Color(220, 220, 200);
+        emptyColor = new Color(247, 246, 235);
         packetsInCell = new HashSet<Packet>();
     }
 

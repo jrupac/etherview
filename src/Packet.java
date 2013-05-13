@@ -49,4 +49,16 @@ public class Packet {
     public Host getSource() {
         return source;
     }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void resetCellsLeftToWrite() {
+        numCellsWritten = 0;
+    }
+
+    public int numCellsLeftToWrite() {
+        return length - numCellsWritten;
+    }
 }

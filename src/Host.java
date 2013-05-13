@@ -11,7 +11,6 @@ public class Host {
         DEFERRING,          // Waiting for passing packet to complete
         WRITING,            // Writing packet to ether
         BACKED_OFF,         // Waiting after collision before re-sending
-        WAITING_ON_SEND     // Waiting to ensure sent packet does not get corrupted
     }
 
     private final double x;
@@ -24,7 +23,6 @@ public class Host {
 
     private int secondsTilNextSend;
     private int backoffFactor;
-    private int secondsTilSure;
     private State currentState;
 
     public Host(String name, int x, int y, int cellIndex, Color color, Ether ether) {
@@ -39,7 +37,6 @@ public class Host {
         currentState = State.IDLE;
         secondsTilNextSend = 0;
         backoffFactor = 1;
-        secondsTilSure = 0;
 
         if (ether != null) {
             ether.registerHost(this);
@@ -111,8 +108,9 @@ public class Host {
                         ether.write(queuedPackets.peek(), cellIndex);
                         queuedPackets.peek().markCellWritten();
                     } else {
-                        secondsTilSure = ether.RTT;
-                        currentState = State.WAITING_ON_SEND;
+                        queuedPackets.poll();
+                        secondsTilNextSend = 0;
+                        currentState = State.IDLE;
                     }
                 }
                 break;
@@ -120,20 +118,6 @@ public class Host {
                 if (--secondsTilNextSend == 0) {
                     backoffFactor = 1;
                     currentState = State.WRITING;
-                }
-                break;
-            case WAITING_ON_SEND:
-                if (currentCell.isCorrupted()) {
-                    ether.write(Ether.JAM_PACKET, cellIndex);
-                    secondsTilNextSend += (int) (Math.random() * (1 << ++backoffFactor));
-                    secondsTilSure = Integer.MAX_VALUE;
-                    currentState = State.BACKED_OFF;
-                } else {
-                    if (--secondsTilSure == 0) {
-                        queuedPackets.poll();
-                        secondsTilNextSend = 0;
-                        currentState = State.IDLE;
-                    }
                 }
                 break;
         }

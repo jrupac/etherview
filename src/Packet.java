@@ -9,6 +9,10 @@ public class Packet {
     private int numCellsWritten;
 
     public Packet(int length, Host destination) {
+        if (length < Ether.MIN_PACKET_LENGTH) {
+            throw new IllegalArgumentException("Minimum length of a packet is " + Ether.MIN_PACKET_LENGTH + " cells.\n" +
+                    "(Each cell represents " + 500 / Ether.MAX_ETHER_LENGTH + " meters.)");
+        }
         this.length = length;
         this.destination = destination;
         numCellsWritten = 0;

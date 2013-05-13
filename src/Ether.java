@@ -7,9 +7,12 @@ import java.util.*;
  */
 public class Ether implements Drawable {
 
+    public static final int MAX_ETHER_LENGTH = 25;
+    public static final int MIN_PACKET_LENGTH = (2 * MAX_ETHER_LENGTH) / 1;
+
     // Used to make all jam packets have the same color
     private static final Host JAM_HOST = new Host("JAM", 0, 0, 0, Color.BLACK, null);
-    public static final Packet JAM_PACKET = new Packet(1, JAM_HOST);
+    public static final Packet JAM_PACKET = new Packet(MIN_PACKET_LENGTH, JAM_HOST);
 
     static {
         JAM_PACKET.setSource(JAM_HOST);
@@ -33,6 +36,10 @@ public class Ether implements Drawable {
 
 
     public Ether(double startX, double startY, double cellWidth, double cellHeight, int numCells) {
+        if (numCells > MAX_ETHER_LENGTH) {
+            throw new IllegalArgumentException("Maximum length of an Ether is " + MAX_ETHER_LENGTH + " cells.\n" +
+                    "(Each cell represents " + 500 / MAX_ETHER_LENGTH + " meters.)");
+        }
         this.startX = startX;
         this.startY = startY;
         this.cellHeight = cellHeight;

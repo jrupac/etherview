@@ -39,8 +39,8 @@ public class Runner {
         });
 
 
-        hosts[2].sendPacket(new Packet(6, hosts[0]));
-        hosts[0].sendPacket(new Packet(4, hosts[1]));
-        hosts[1].sendPacket(new Packet(10, hosts[0]));
+        hosts[2].sendPacket(new Packet(Ether.MIN_PACKET_LENGTH + 6, hosts[0]));
+        hosts[0].sendPacket(new Packet(Ether.MIN_PACKET_LENGTH + 4, hosts[1]));
+        hosts[1].sendPacket(new Packet(Ether.MIN_PACKET_LENGTH + 10, hosts[0]));
     }
 }

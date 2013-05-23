@@ -1,12 +1,9 @@
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 /**
  * The user interface, which allows users to make hosts send messages,
@@ -46,8 +43,8 @@ public class EtherGUI extends JFrame {
         final JPanel controls = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 20));
         final JPanel speed = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 20));
 
-        final JComboBox<Host> senderBox = new JComboBox<Host>(senderHosts);
-        final JComboBox<Host> receiverBox = new JComboBox<Host>(receiverHosts);
+        final JComboBox senderBox = new JComboBox(senderHosts);
+        final JComboBox receiverBox = new JComboBox(receiverHosts);
         final JButton sendButton = new JButton(SEND);
 
         senderBox.setSelectedIndex(0);
@@ -160,8 +157,8 @@ public class EtherGUI extends JFrame {
 
                 int packetLength = packetSize.getValue();
 
-                Host sender = senderBox.getItemAt(senderIndex);
-                Host receiver = receiverBox.getItemAt(receiverIndex);
+                Host sender = (Host) senderBox.getItemAt(senderIndex);
+                Host receiver = (Host) receiverBox.getItemAt(receiverIndex);
                 sender.sendPacket(new Packet(packetLength, receiver));
             }
         });
